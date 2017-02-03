@@ -4,7 +4,7 @@
 }
 
 .t2048-header {
-    height: 25%;
+    height: 15%;
 }
 
 .t2048-footer {
@@ -12,12 +12,12 @@
 }
 
 .t2048-main {
-    height: 50%;
+    height: 60%;
 }
 
 table {
-    width: 90%;
-    height: 90%;
+    width: 90vw;
+    height: 90vw;
     background: #b9ac9f;
     margin: auto;
 }
@@ -72,24 +72,29 @@ td {
 .t128{
     background: #edcf72;
     color: #f8f5f0;
+    font-size: 2.8rem;
 }
 
 .t256{
     background: #edcb5f;
     color: #f9f6f3;
+    font-size: 2.8rem;
 }
 
 .t512{
     background: #edc850;
     color: #f8f5f1;
+    font-size: 2.8rem;
 }
 
 .t1024{
     background: #edc53f;
     color: #f8f5f3;
+    font-size: 2rem;
 }
 
 .t2048{
     background: #3e3c31;
     color: #f8f5f0;
+    font-size: 2rem;
 }
