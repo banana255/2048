@@ -1,0 +1,95 @@
+.t2048-game {
+    height: 100vh;
+    background: #fbf8ee;
+}
+
+.t2048-header {
+    height: 25%;
+}
+
+.t2048-footer {
+    height: 25%;
+}
+
+.t2048-main {
+    height: 50%;
+}
+
+table {
+    width: 90%;
+    height: 90%;
+    background: #b9ac9f;
+    margin: auto;
+}
+
+td {
+    background: #cabeb1;
+    border-radius: 0.2rem;
+    width: 25%;
+    height: 25%;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+/* 垂直居中 */
+.vertical-align {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.t2 {
+    background: #ebe2d8;
+    color: #756d63;
+}
+
+.t4 {
+    background: #eaddc6;
+    color: #756d63;
+}
+
+.t8{
+    background: #efaf77;
+    color: #f8f5f1;
+}
+
+.t16{
+    background: #f39463;
+    color: #f8f5f1;
+}
+
+.t32{
+    background: #f37a5e;
+    color: #f8f5f1;
+}
+
+.t64{
+    background: #f45d3a;
+    color: #f8f5f0;
+}
+
+.t128{
+    background: #edcf72;
+    color: #f8f5f0;
+}
+
+.t256{
+    background: #edcb5f;
+    color: #f9f6f3;
+}
+
+.t512{
+    background: #edc850;
+    color: #f8f5f1;
+}
+
+.t1024{
+    background: #edc53f;
+    color: #f8f5f3;
+}
+
+.t2048{
+    background: #3e3c31;
+    color: #f8f5f0;
+}

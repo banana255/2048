@@ -3,9 +3,91 @@
     <head>
         <meta charset="utf-8">
         <title>大香蕉的 2048</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <script src=2048lib.js></script>
+        <link rel="stylesheet" href="normalize.css" media="screen" title="no title">
+        <link rel="stylesheet" href="2048.css" media="screen" title="no title">
         <script src=2048.js></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                    // do work
+                    __main2048()
+                });
+        </script>
     </head>
     <body>
+        <div class="t2048-game">
+            <div class="t2048-header">
 
+            </div>
+            <div class="t2048-main">
+                <table class="vertical-align">
+                    <tr>
+                        <td class=''>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="t2048-footer">
+                <button id='button-up'>up</button>
+                <button id='button-down'>down</button>
+                <button id='button-left'>left</button>
+                <button id='button-right'>right</button>
+            </div>
+        </div>
+        <!-- <img src="2048.jpg" width="100%" height="100%" alt="" />
+        <img src="2048.png" width="100%" height="100%" alt="" /> -->
     </body>
 </html>

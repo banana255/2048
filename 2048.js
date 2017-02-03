@@ -1,271 +1,183 @@
-var init_array = [
-    [0,2,2,0],
-    [0,2,2,0],
-    [0,2,2,0],
-    [0,2,2,0],
-]
+const e = (sel) => document.querySelector(sel)
 
-const supplementZero = function(array, direction, num) {
-    /*
-        给 array 补充 num 个 0
-        direction 参数： begin 表示在头部补 0
-                        end 表示在尾部补 0
-    */
-    var a = array.slice(0)
-    if (direction == 'begin') {
-        for (var i = 0; i < num; i++) {
-            a.unshift(0)
-        }
-        return a
-    } else if (direction == 'end') {
-        for (var i = 0; i < num; i++) {
-            a.push(0)
-        }
-        return a
-    }
-}
+const es = (sel) => document.querySelectorAll(sel)
 
-const rejectByIndex = function(array, index, direction) {
+const arrayFormatByTds = function(table) {
     /*
-        将 array[index] 剔除，并在头/尾补充 0
-        direction 参数： begin 表示在头部补 0
-                        end 表示在尾部补 0
+        传入一个 table 标签，将 table 里 的 tds 生成一个 二维数组
     */
-    var a = array.slice(0)
-    a.splice(index, 1)
-    a = supplementZero(a, direction, 1)
-    return a
-    // if (index == 0) {
-    //     a = a.slice(1)
-    // } else if (index == a.length - 1) {
-    //     a.pop()
-    // } else if(index > 0 && index < a.length - 1) {
-    //     var qian = a.slice(0, index)
-    //     var hou = a.slice(index+1)
-    //     a = qian.concat(hou)
-    // }
-    // if (direction == 'begin') {
-    //     a.unshift(0)
-    // } else if (direction == 'end') {
-    //     a.push(0)
-    // }
-}
-
-const moveArray = function(array, direction) {
-    /*
-        移动数组: 根据 direction 让 array 清除 左/右 边的 0 ，
-                并在另一边用补 0 的方式保持 array 原来的长度
-        direction 参数： left 表示清除 左 边的 0 ，
-                        right 表示清除 右 边的 0 ，
-    */
-    var a = array.slice(0)
-    var length = a.length
-    var index = 0
-    if (direction == 'left') {
-        for (var i = 0; i < length; i++) {
-            if(a[i] != 0) {
-                index = i
-                // console.log(index);
-                a = a.slice(index)
-                var num = length - a.length
-                a = supplementZero(a, 'end', num)
-                return a
-            }
-        }
-    } else if(direction == 'right') {
-        for (var i = 0; i < length; i++) {
-            if(a[length - 1 - i] != 0) {
-                index = length - 1 - i
-                a = a.slice(0, index+1)
-                // console.log(a, index);
-                var num = length - a.length
-                a = supplementZero(a, 'begin', num)
-                return a
-            }
+    var tds = es(table+' td')
+    var trs = es(table+' tr')
+    // console.log(tds, trs);
+    var t = arrayInit(trs.length)
+    for (var i = 0; i < trs.length; i++) {
+        for (var j = 0; j < trs[i].children.length; j++) {
+            t[i][j] = tds[i * trs.length + j]
         }
     }
-    return a
+    return t
 }
 
-const handleOneLine = function(array, direction) {
+const changeViewByArray = function(table, array) {
     /*
-    处理一行
-    direction 参数： left 表示在向左滑动处理
-                    right 表示在向右滑动处理
+        table 是 包括 tds 的二维素组
+        将 View 的 value 变成 array 中的值
     */
-    var a = array.slice(0)
-    var length = a.length
-    for (var i = 0; i < length; i++) {
-        // if (a[i] == a[i+1] && a[i] != 0) {
-        //     a[i] *= 2
-        //     if (direction == 'left') {
-        //         a = rejectByIndex(a, i+1, 'end')
-        //     } else if (direction == 'right') {
-        //         a = rejectByIndex(a, i+1, 'begin')
-        //     }
-        // }
-        if (direction == 'left') {
-            if (a[i] == a[i+1] && a[i] != 0) {
-                a[i] *= 2
-                a = rejectByIndex(a, i+1, 'end')
-            }
-        } else if (direction == 'right') {
-            if (a[length-1-i] == a[length-i-2] && a[length-1-i] != 0) {
-                a[length-1-i] *= 2
-                a = rejectByIndex(a, length-i-2, 'begin')
-            }
-        }
-    }
-    // console.log(a);
-    a = moveArray(a, direction)
-    return a
-}
-
-const encodeArray = function(array) {
-    /*
-        旋转 array
-            使得 上下 变 左右
-    */
-    // console.log('encodeArray');
-    var a = copyArray(array)
-    var length = a.length
-    var r = arrayInit(length)
-    for (var i = 0; i < length; i++) {
-        for (var j = 0; j < a[i].length; j++) {
-            r[i][j] = array[j][i]
-        }
-    }
-    return r
-}
-
-const decodeArray = function(array) {
-    /*
-        复原 array
-            让 左右 回复成 上下
-    */
-    // console.log('decodeArray');
-    return encodeArray(array)
-}
-
-const handleLeftArray = function(array) {
-    var a = copyArray(array)
-    var r = []
-    for (var i = 0; i < a.length; i++) {
-        r.push(handleOneLine(a[i], 'left'))
-    }
-    return r
-}
-
-const handleRightArray = function(array) {
-    // console.log('handleRightArray', array);
-    var a = copyArray(array)
-    var r = []
-    for (var i = 0; i < a.length; i++) {
-        r.push(handleOneLine(a[i], 'right'))
-    }
-    // console.log('handleRightArray end', r);
-    return r
-}
-
-const handleUpArray = function(array) {
-    var a = copyArray(array)
-    a = encodeArray(a)
-    a = handleLeftArray(a)
-    a = decodeArray(a)
-    return a
-}
-
-const handleDownArray = function(array) {
-    console.log('handleDownArray');
-    var a = copyArray(array)
-    a = encodeArray(a)
-    a = handleRightArray(a)
-    a = decodeArray(a)
-    return a
-}
-
-const arrayLine = function(length) {
-    // 制造一行 0
-    var array = []
-    for (var i = 0; i < length; i++) {
-        array.push(0)
-    }
-    return array
-}
-
-const arrayInit = function(length) {
-    /*
-        制造一个 length * length 的矩阵数组, 矩阵数值为 0
-    */
-    const array = []
-    for (var i = 0; i < length; i++) {
-        array.push(arrayLine(length))
-    }
-    return array
-}
-
-const numOfZeroFromArray = function(array) {
-    /*
-        返回: 二维数组中 0 的个数
-    */
-    var num = 0
     for (var i = 0; i < array.length; i++) {
         for (var j = 0; j < array[i].length; j++) {
-            if(array[i][j] == 0) {
-                num++
+            var value = array[i][j]
+            var td = table[i][j]
+            td.setAttribute('class', '')
+            if (value != 0) {
+                var className = 't' + value
+                td.classList.add(className)
+                td.innerHTML = value
+            } else {
+                td.innerHTML = ''
             }
         }
     }
-    return num
 }
 
-const numberRandom = function(count) {
+const showView = function(array) {
     /*
-        在 0 ~ count 内,产生一个 随机数
-    */
-    const r = Math.random() * count
-    return Math.ceil(r)
-}
-
-const copyArray = function(array) {
-    /*
-        复制二维数组
-    */
-    // console.log('copyArray');
-    var r = []
-    for (var i = 0; i < array.length; i++) {
-        r.push(array[i].slice(0))
-    }
-    return r
-}
-
-const arrayByCreateZero = function(array) {
-    /*
-        随机挑选 二维数组 中的其中一个 0 位置赋值为 2，并返回这个 二维数组
+        把 array 二维数组渲染成页面
     */
     var a = copyArray(array)
-    const count = numOfZeroFromArray(a)
-    const num = numberRandom(count)
-    var n = 0
-    const initNum = 2
-    for (var i = 0; i < a.length; i++) {
-        for (var j = 0; j < a[i].length; j++) {
-            if(a[i][j] == 0) {
-                n++
-            }
-            if(num == n) {
-                a[i][j] = initNum
-                return a
-            }
-        }
-    }
+    var table = arrayFormatByTds('table')
+    changeViewByArray(table, a)
+}
+
+const leftActionToView = function() {
+    /*
+        向左滑动时视图的变化
+    */
+    value2048 = handleLeftArray(value2048)
+    showView(value2048)
+    // console.log(value2048);
+}
+
+const rightActionToView = function() {
+    /*
+        向右滑动时视图的变化
+    */
+    value2048 = handleRightArray(value2048)
+    showView(value2048)
+    // console.log(value2048);
+}
+
+const upActionToView = function() {
+    /*
+        向上滑动时视图的变化
+    */
+    value2048 = handleUpArray(value2048)
+    showView(value2048)
+    // console.log(value2048);
+}
+
+const downActionToView = function() {
+    /*
+        向下滑动时视图的变化
+    */
+    value2048 = handleDownArray(value2048)
+    showView(value2048)
+    // console.log(value2048);
 }
 
 const init2048 = function() {
+    value2048 = init2048Array()
+    // console.log('initArray', a);
+    showView(value2048)
+}
+
+const angleBySlide = function(dx, dy) {
+    return Math.atan2(dy,dx) * 180 / Math.PI
+}
+
+const judgeDirection = function(sX, sY, eX, eY) {
     /*
-        初始化 2048，即生成一个二维数组，随机数组中有两个 2
+        根据坐标判断 方向
+        return: false 为判断不出
+                'up' 为上
+                'down'
+                'right'
+                'left'
     */
-    var initaArray = arrayInit(4)
-    initArray = arrayByCreateZero(initaArray)
-    initArray = arrayByCreateZero(initArray)
+    var dx = eX - sX
+    var dy = sY - eY
+    var angle = angleBySlide(dx, dy);
+    // 滑动距离太短 的情况
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+        return false
+    } else if (angle >= -45 && angle < 45) {
+        return 'right'
+    } else if (angle >= 45 && angle < 135) {
+        return 'up'
+    }else if (angle >= -135 && angle < -45) {
+        return 'down'
+    }else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+        return 'left'
+    }
+}
+
+const bindSlideEvent = function() {
+    var startX, startY
+
+    e('table').addEventListener('touchstart', function(event){
+        // console.log('touchstart', event);
+        startX = event.touches[0].pageX
+        startY = event.touches[0].pageY
+    })
+
+    e('table').addEventListener('touchmove', function(event){
+        // console.log('touchmove', event);
+        // var endX = event.changedTouches[0].pageX;
+        // var endY = event.changedTouches[0].pageY;
+        event.preventDefault()
+    })
+
+    e('table').addEventListener('touchend', function(event){
+        // console.log('touchend', event);
+        var endX = event.changedTouches[0].pageX;
+        var endY = event.changedTouches[0].pageY;
+
+        var dire = judgeDirection(startX, startY, endX, endY)
+        if (dire == 'up') {
+            upActionToView()
+        } else if (dire == 'down') {
+            downActionToView()
+        } else if (dire == 'left') {
+            leftActionToView()
+        } else if (dire == 'right') {
+            rightActionToView()
+        }
+    })
+}
+
+const bindEvents = function() {
+    bindSlideEvent()
+}
+
+var value2048 = arrayInit(4)
+
+const textButton = function() {
+    e('#button-left').addEventListener('click', function(event){
+        leftActionToView()
+    })
+    e('#button-right').addEventListener('click', function(event){
+        rightActionToView()
+    })
+    e('#button-up').addEventListener('click', function(event){
+        upActionToView()
+    })
+    e('#button-down').addEventListener('click', function(event){
+        downActionToView()
+    })
+}
+
+const __main2048 = function() {
+    init2048()
+    textButton()
+
+    bindEvents()
 }
