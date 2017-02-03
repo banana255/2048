@@ -163,6 +163,7 @@ const decodeArray = function(array) {
 const handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
+        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     var a = copyArray(array)
     var r = []
@@ -176,6 +177,7 @@ const handleLeftArray = function(array) {
 const handleRightArray = function(array) {
     /*
         向右滑动时 array 合并 & 移动 & 添加一个新元素 (2)
+        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     // console.log('handleRightArray', array);
     var a = copyArray(array)
@@ -191,24 +193,32 @@ const handleRightArray = function(array) {
 const handleUpArray = function(array) {
     /*
         向上滑动时 array 合并 & 移动 & 添加一个新元素 (2)
+        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     var a = copyArray(array)
     a = encodeArray(a)
     a = handleLeftArray(a)
-    a = decodeArray(a)
-    return a
+    var r = {}
+    r.value = decodeArray(a.value)
+    r.i = a.j
+    r.j = a.i
+    return r
 }
 
 const handleDownArray = function(array) {
     /*
         向下滑动时 array 合并 & 移动 & 添加一个新元素 (2)
+        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     // console.log('handleDownArray');
     var a = copyArray(array)
     a = encodeArray(a)
     a = handleRightArray(a)
-    a = decodeArray(a)
-    return a
+    var r = {}
+    r.value = decodeArray(a.value)
+    r.i = a.j
+    r.j = a.i
+    return r
 }
 
 const arrayLine = function(length) {
@@ -268,7 +278,7 @@ const copyArray = function(array) {
 
 const arrayByCreateZero = function(array) {
     /*
-        随机挑选 二维数组 中的其中一个 0 位置赋值为 2，并返回这个 二维数组
+        随机挑选 二维数组 中的其中一个 0 位置赋值为 2，并返回这个 二维数组 & 坐标
     */
     var a = copyArray(array)
     const count = numOfZeroFromArray(a)
@@ -282,7 +292,11 @@ const arrayByCreateZero = function(array) {
             }
             if(num == n) {
                 a[i][j] = initNum
-                return a
+                return {
+                    value: a,
+                    i: i,
+                    j: j,
+                }
             }
         }
     }
@@ -293,7 +307,7 @@ const init2048Array = function() {
         初始化 2048，即生成一个二维数组，随机数组中有两个 2
     */
     var initaArray = arrayInit(4)
-    initArray = arrayByCreateZero(initaArray)
-    initArray = arrayByCreateZero(initArray)
+    initArray = arrayByCreateZero(initaArray).value
+    initArray = arrayByCreateZero(initArray).value
     return initArray
 }

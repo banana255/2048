@@ -18,6 +18,20 @@ const arrayFormatByTds = function(table) {
     return t
 }
 
+const changeSingleView = function(td, value) {
+    /*
+        改变单个单元格 td 的 view
+    */
+    td.setAttribute('class', '')
+    if (value != 0) {
+        var className = 't' + value
+        td.classList.add(className)
+        td.innerHTML = value
+    } else {
+        td.innerHTML = ''
+    }
+}
+
 const changeViewByArray = function(table, array) {
     /*
         table 是 包括 tds 的二维素组
@@ -27,14 +41,7 @@ const changeViewByArray = function(table, array) {
         for (var j = 0; j < array[i].length; j++) {
             var value = array[i][j]
             var td = table[i][j]
-            td.setAttribute('class', '')
-            if (value != 0) {
-                var className = 't' + value
-                td.classList.add(className)
-                td.innerHTML = value
-            } else {
-                td.innerHTML = ''
-            }
+            changeSingleView(td, value)
         }
     }
 }
@@ -48,40 +55,55 @@ const showView = function(array) {
     changeViewByArray(table, a)
 }
 
+const showNew = function(i, j) {
+    var t = arrayFormatByTds('table')
+    t[i][j].classList.remove('new-one')
+    t[i][j].classList.add('new-one')
+}
+
 const leftActionToView = function() {
     /*
-        向左滑动时视图的变化
+        向左滑动时视图的变化,并返回新元素的坐标
     */
-    value2048 = handleLeftArray(value2048)
+    var r = handleLeftArray(value2048)
+    value2048 = r.value
     showView(value2048)
     // console.log(value2048);
+    return r
 }
 
 const rightActionToView = function() {
     /*
-        向右滑动时视图的变化
+        向右滑动时视图的变化,并返回新元素的坐标
     */
-    value2048 = handleRightArray(value2048)
+    var r = handleRightArray(value2048)
+    value2048 = r.value
     showView(value2048)
     // console.log(value2048);
+    return r
 }
 
 const upActionToView = function() {
     /*
-        向上滑动时视图的变化
+        向上滑动时视图的变化,并返回新元素的坐标
     */
-    value2048 = handleUpArray(value2048)
+    var r = handleUpArray(value2048)
+    value2048 = r.value
     showView(value2048)
     // console.log(value2048);
+    return r
 }
 
 const downActionToView = function() {
     /*
-        向下滑动时视图的变化
+        向下滑动时视图的变化,并返回新元素的坐标
     */
-    value2048 = handleDownArray(value2048)
+    var r = handleDownArray(value2048)
+    console.log(r);
+    value2048 = r.value
     showView(value2048)
     // console.log(value2048);
+    return r
 }
 
 const init2048 = function() {
@@ -143,14 +165,16 @@ const bindSlideEvent = function() {
 
         var dire = judgeDirection(startX, startY, endX, endY)
         if (dire == 'up') {
-            upActionToView()
+            var r = upActionToView()
         } else if (dire == 'down') {
-            downActionToView()
+            var r = downActionToView()
         } else if (dire == 'left') {
-            leftActionToView()
+            var r = leftActionToView()
         } else if (dire == 'right') {
-            rightActionToView()
+            var r = rightActionToView()
         }
+        // 给 新增加的元素 添加 放大 的动画
+        showNew(r.i, r.j)
     })
 }
 
@@ -177,7 +201,7 @@ const textButton = function() {
 
 const __main2048 = function() {
     init2048()
-    textButton()
+    // textButton()
 
     bindEvents()
 }
