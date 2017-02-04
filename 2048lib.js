@@ -9,6 +9,13 @@ var score = {
     max: 0,
 }
 
+var statusSuc = {
+    success: false,
+    false: false,
+}
+
+// console.log(status);
+
 const saveScore = function(s) {
     /*
         记录 分数
@@ -209,6 +216,61 @@ const newOneOfArray = function(result, array) {
     }
 }
 
+const isSameLine = function(array) {
+    /*
+        判断 一维数组 是否有相邻 两个 是相等的，如果有则返回 true
+    */
+    for (var i = 0; i < array.length-1; i++) {
+        if(array[i] == array[i+1]) {
+            return true
+        }
+    }
+    return false
+}
+
+const isSuccess = function(array) {
+    /*
+        判断 成功 还是 失败, 从而改变全局变量 status
+    */
+    // 判断是否 成功
+    for (var i = 0; i < array.length; i++) {
+        for (var j = 0; j < array[i].length; j++) {
+            if(array[i][j] == 2048) {
+                statusSuc.success = true
+                console.log('成功');
+                return 1
+            }
+        }
+    }
+
+    // 判断是否有有 空格 存在
+    for (var i = 0; i < array.length; i++) {
+        for (var j = 0; j < array[i].length; j++) {
+            if(array[i][j] == 0) {
+                return 1
+            }
+        }
+    }
+
+    // 判断每行相邻是否有相同的值
+    for (var i = 0; i < array.length; i++) {
+        if (isSameLine(array[i])) {
+            return 1
+        }
+    }
+
+    // 判断每列相邻是否有相同的值
+    var a = encodeArray(array)
+    for (var i = 0; i < a.length; i++) {
+        if (isSameLine(a[i])) {
+            return 1
+        }
+    }
+
+    statusSuc.false = true
+    console.log('失败');
+}
+
 const handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
@@ -219,16 +281,8 @@ const handleLeftArray = function(array) {
     for (var i = 0; i < a.length; i++) {
         r.push(handleOneLine(a[i], 'left'))
     }
+    isSuccess(r)
     return newOneOfArray(r, array)
-    // if(!compareArray(array, r)) {
-    //     r = arrayByCreateZero(r)
-    //     return r
-    // } else {
-    //     return {
-    //         value: r
-    //     }
-    // }
-
 }
 
 const handleRightArray = function(array) {
@@ -242,18 +296,9 @@ const handleRightArray = function(array) {
     for (var i = 0; i < a.length; i++) {
         r.push(handleOneLine(a[i], 'right'))
     }
+    isSuccess(r)
     return newOneOfArray(r, array)
     // console.log('handleRightArray end', r);
-    // if(!compareArray(array, r)) {
-    //     r = arrayByCreateZero(r)
-    //     return r
-    // } else {
-    //     return {
-    //         value: r,
-    //         i: false,
-    //         j: false,
-    //     }
-    // }
 }
 
 const handleUpArray = function(array) {

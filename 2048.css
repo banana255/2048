@@ -230,3 +230,33 @@ td > span {
         -webkit-transform: scale(1);
     }
 }*/
+
+.none {
+    font-size: 0 !important;
+}
+
+.success-eff,
+.false-eff {
+    text-align: center;
+    font-size: 2rem;
+    margin: 0 1rem;
+    font-weight: bolder;
+    color: #f54444;
+}
+
+/* warning 动画 */
+.warning {
+    color: #f54444;
+    -webkit-animation: 0.1s warn 4 alternate;
+    animation: 0.1s warn 4 alternate;
+    text-align: center;
+}
+
+@keyframes warn {
+    0% {
+        transform: translate(-5%, 0%);
+    }
+    50% {
+        transform: translate(5%, 0%);
+    }
+}

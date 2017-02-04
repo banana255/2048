@@ -46,6 +46,25 @@ const changeViewByArray = function(table, array) {
     }
 }
 
+const showisSuccess = function(status) {
+    // console.log('vix', status);
+    if(status.false) {
+        // console.log('game false');
+        e('.false-eff').classList.remove('none')
+        e('.false-eff').classList.add('warning')
+        setTimeout.call(this, function(){
+            e('.false-eff').classList.remove('warning')
+        }, 400)
+    }
+    if(status.success) {
+        e('.success-eff').classList.remove('none')
+        e('.success-eff').classList.add('warning')
+        setTimeout.call(this, function(){
+            e('.success-eff').classList.remove('warning')
+        }, 400)
+    }
+}
+
 const showScore = function(score) {
     e('#id-score-now').innerHTML = score.now
     var nowMax = e('#id-score-max').innerHTML
@@ -62,6 +81,7 @@ const showView = function(array) {
     var table = arrayFormatByTds('table')
     changeViewByArray(table, a)
     showScore(score)
+    showisSuccess(statusSuc)
 }
 
 const showNew = function(i, j) {
@@ -201,6 +221,10 @@ const bindSlideEvent = function() {
 const newGame = function() {
     value2048 = arrayInit(4)
     score.now = 0
+    statusSuc.success = false
+    statusSuc.false = false
+    e('.false-eff').classList.add('none')
+    e('.success-eff').classList.add('none')
     init2048()
 }
 
