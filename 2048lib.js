@@ -4,6 +4,21 @@
 //     [0,2,2,0],
 //     [0,2,2,0],
 // ]
+var score = {
+    now: 0,
+    max: 0,
+}
+
+const saveScore = function(s) {
+    /*
+        记录 分数
+    */
+    score.now += s
+    if (score.now > score.max) {
+        score.max = score.now
+    }
+    // console.log(score.now, score.max);
+}
 
 const supplementZero = function(array, direction, num) {
     /*
@@ -120,11 +135,13 @@ const handleOneLine = function(array, direction) {
         if (direction == 'left') {
             if (a[i] == a[i+1] && a[i] != 0) {
                 a[i] *= 2
+                saveScore(a[i])
                 a = rejectByIndex(a, i+1, 'end')
             }
         } else if (direction == 'right') {
             if (a[length-1-i] == a[length-i-2] && a[length-1-i] != 0) {
                 a[length-1-i] *= 2
+                saveScore(a[length-1-i])
                 a = rejectByIndex(a, length-i-2, 'begin')
             }
         }
@@ -354,10 +371,22 @@ const arrayByCreateZero = function(array) {
 
 const init2048Array = function() {
     /*
-        初始化 2048，即生成一个二维数组，随机数组中有两个 2
+        初始化 2048，即生成一个二维数组，随机数组中有两个 2 ,返回 二维数组 & 坐标
     */
     var initaArray = arrayInit(4)
-    initArray = arrayByCreateZero(initaArray).value
-    initArray = arrayByCreateZero(initArray).value
-    return initArray
+    var r = arrayByCreateZero(initaArray)
+    initArray = r.value
+    var result = {
+        f: {
+            i: r.i,
+            j: r.j,
+        }
+    }
+    r = arrayByCreateZero(initArray)
+    result.initArray = r.value
+    result.s = {
+        i: r.i,
+        j: r.j,
+    }
+    return result
 }

@@ -3,14 +3,109 @@
     background: #fbf8ee;
 }
 
+/* header */
 .t2048-header {
     height: 15%;
 }
 
+logo {
+    display: inline-block;
+    height: 80%;
+    width: 12vh;
+    background: #ecc835;
+    margin-left: 1.5rem;
+    border-radius: 0.5rem;
+    color: #ffffff;
+    font-weight: bold;
+    float: left;
+}
+
+.logo-title {
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    line-height: 7vh;
+    margin-top: 0.5rem;
+}
+
+.logo-info {
+    display: block;
+    text-align: center;
+}
+
+.feature-group {
+    margin-left: 26vh;
+    font-size: 0;
+    color: #ffffff;
+}
+
+score {
+    display: block;
+}
+
+score > span {
+    background: #b7a99e;
+    box-sizing: border-box;
+    width: 11vh;
+    height: 7vh;
+    border-radius: 0.3rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.score-now {
+    display: inline-block;
+    /*height: calc(7vh + 3vh + 1vh);*/
+}
+
+.score-max > span,
+.score-now > span {
+    display: block;
+}
+
+.score-max {
+    display: inline-block;
+    margin-left: 7vw;
+}
+
+.score-info {
+    margin-top: 0.2rem
+}
+
+#id-score-now,
+#id-score-max {
+    font-size: 1.4rem;
+}
+
+feature {
+    display: block;
+    margin-top: 1vh;
+}
+
+feature > span {
+    background: #f5965f;
+    width: 11vh;
+    height: 3vh;
+    border-radius: 0.3rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.mean {
+    display: inline-block;
+}
+
+.new-game {
+    display: inline-block;
+    margin-left: calc(7vw + 11vh);
+}
+
+/* footer */
 .t2048-footer {
     height: 25%;
 }
 
+/* 2048 main */
 .t2048-main {
     height: 60%;
 }
@@ -20,6 +115,7 @@ table {
     height: 90vw;
     background: #b9ac9f;
     margin: auto;
+    overflow: hidden;
 }
 
 td {

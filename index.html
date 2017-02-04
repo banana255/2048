@@ -18,11 +18,30 @@
     <body>
         <div class="t2048-game">
             <div class="t2048-header">
-
+                <logo class="vertical-align">
+                    <span class="logo-title">2048</span>
+                    <span class='logo-info'>4 X 4</span>
+                </logo>
+                <div class="feature-group vertical-align">
+                    <score>
+                        <span class='score-now'>
+                            <span class='score-info'>得分</span>
+                            <span id='id-score-now'>0</span>
+                        </span>
+                        <span class='score-max'>
+                            <span class='score-info'>最高分</span>
+                            <span id='id-score-max'>0</span>
+                        </span>
+                    </score>
+                    <feature>
+                        <!-- <span class='mean'>菜单</span> -->
+                        <span class='new-game'>新游戏</span>
+                    </feature>
+                </div>
             </div>
             <div class="t2048-main">
                 <!-- <table class="vertical-align"> -->
-                <table>
+                <table class="vertical-align">
                     <tr>
                         <td class=''>
                             <span class=""></span>
@@ -82,10 +101,7 @@
                 </table>
             </div>
             <div class="t2048-footer">
-                <!-- <button id='button-up'>up</button>
-                <button id='button-down'>down</button>
-                <button id='button-left'>left</button>
-                <button id='button-right'>right</button> -->
+
             </div>
         </div>
         <!-- <img src="2048.jpg" width="100%" height="100%" alt="" />

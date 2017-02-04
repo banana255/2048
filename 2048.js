@@ -4,7 +4,7 @@ const es = (sel) => document.querySelectorAll(sel)
 
 const arrayFormatByTds = function(table) {
     /*
-        传入一个 table 标签，将 table 里 的 tds span 生成一个 二维数组
+        传入一个 table 标签，将 table 里 的 tds > span 生成一个 二维数组
     */
     var tds = es(table+' td > span')
     var trs = es(table+' tr')
@@ -46,13 +46,22 @@ const changeViewByArray = function(table, array) {
     }
 }
 
+const showScore = function(score) {
+    e('#id-score-now').innerHTML = score.now
+    var nowMax = e('#id-score-max').innerHTML
+    if (score.now > nowMax) {
+        e('#id-score-max').innerHTML = score.max
+    }
+}
+
 const showView = function(array) {
     /*
-        把 array 二维数组渲染成页面
+        把 array 二维数组 和 分数 渲染成页面
     */
     var a = copyArray(array)
     var table = arrayFormatByTds('table')
     changeViewByArray(table, a)
+    showScore(score)
 }
 
 const showNew = function(i, j) {
@@ -111,9 +120,12 @@ const downActionToView = function() {
 }
 
 const init2048 = function() {
-    value2048 = init2048Array()
+    var n = init2048Array()
+    value2048 = n.initArray
     // console.log('initArray', a);
     showView(value2048)
+    showNew(n.f.i, n.f.j)
+    showNew(n.s.i, n.s.j)
 }
 
 const angleBySlide = function(dx, dy) {
@@ -186,30 +198,28 @@ const bindSlideEvent = function() {
     })
 }
 
+const newGame = function() {
+    value2048 = arrayInit(4)
+    score.now = 0
+    init2048()
+}
+
+const bindNewGame = function() {
+    e('.new-game').addEventListener('touchend', function(event){
+        newGame()
+    })
+}
+
 const bindEvents = function() {
     bindSlideEvent()
+
+    bindNewGame()
 }
 
 var value2048 = arrayInit(4)
 
-const textButton = function() {
-    e('#button-left').addEventListener('click', function(event){
-        leftActionToView()
-    })
-    e('#button-right').addEventListener('click', function(event){
-        rightActionToView()
-    })
-    e('#button-up').addEventListener('click', function(event){
-        upActionToView()
-    })
-    e('#button-down').addEventListener('click', function(event){
-        downActionToView()
-    })
-}
-
 const __main2048 = function() {
     init2048()
-    // textButton()
 
     bindEvents()
 }
