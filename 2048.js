@@ -4,9 +4,9 @@ const es = (sel) => document.querySelectorAll(sel)
 
 const arrayFormatByTds = function(table) {
     /*
-        传入一个 table 标签，将 table 里 的 tds 生成一个 二维数组
+        传入一个 table 标签，将 table 里 的 tds span 生成一个 二维数组
     */
-    var tds = es(table+' td')
+    var tds = es(table+' td > span')
     var trs = es(table+' tr')
     // console.log(tds, trs);
     var t = arrayInit(trs.length)
@@ -56,9 +56,13 @@ const showView = function(array) {
 }
 
 const showNew = function(i, j) {
+    // console.log('new one', i, j);
     var t = arrayFormatByTds('table')
-    t[i][j].classList.remove('new-one')
+    // t[i][j].classList.remove('new-one')
     t[i][j].classList.add('new-one')
+    setTimeout.call(this, function(){
+        t[i][j].classList.remove('new-one')
+    }, 500)
 }
 
 const leftActionToView = function() {
@@ -99,7 +103,7 @@ const downActionToView = function() {
         向下滑动时视图的变化,并返回新元素的坐标
     */
     var r = handleDownArray(value2048)
-    console.log(r);
+    // console.log(r);
     value2048 = r.value
     showView(value2048)
     // console.log(value2048);
@@ -172,9 +176,13 @@ const bindSlideEvent = function() {
             var r = leftActionToView()
         } else if (dire == 'right') {
             var r = rightActionToView()
+        } else if (!dire) {
+            return false
         }
-        // 给 新增加的元素 添加 放大 的动画
-        showNew(r.i, r.j)
+        if (r.i !== false) {
+            // 给 新增加的元素 添加 放大 的动画
+            showNew(r.i, r.j)
+        }
     })
 }
 

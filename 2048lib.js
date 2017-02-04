@@ -160,6 +160,38 @@ const decodeArray = function(array) {
     return encodeArray(array)
 }
 
+const compareArray = function(a1, a2) {
+    /*
+        比较两个 二维数组 是否相等
+    */
+    for (var i = 0; i < a1.length; i++) {
+        for (var j = 0; j < a1[i].length; j++) {
+            if(a1[i][j] != a2[i][j]) {
+                // console.log('不相等');
+                return false
+            }
+        }
+    }
+    // console.log('相等');
+    return true
+}
+
+const newOneOfArray = function(result, array) {
+    /*
+        判断是否需要添加一个新元素，需要则添加，不需要则返回{i:false, j:false}
+    */
+    if(!compareArray(array, result)) {
+        result = arrayByCreateZero(result)
+        return result
+    } else {
+        return {
+            value: result,
+            i: false,
+            j: false,
+        }
+    }
+}
+
 const handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
@@ -170,8 +202,16 @@ const handleLeftArray = function(array) {
     for (var i = 0; i < a.length; i++) {
         r.push(handleOneLine(a[i], 'left'))
     }
-    r = arrayByCreateZero(r)
-    return r
+    return newOneOfArray(r, array)
+    // if(!compareArray(array, r)) {
+    //     r = arrayByCreateZero(r)
+    //     return r
+    // } else {
+    //     return {
+    //         value: r
+    //     }
+    // }
+
 }
 
 const handleRightArray = function(array) {
@@ -185,9 +225,18 @@ const handleRightArray = function(array) {
     for (var i = 0; i < a.length; i++) {
         r.push(handleOneLine(a[i], 'right'))
     }
+    return newOneOfArray(r, array)
     // console.log('handleRightArray end', r);
-    r = arrayByCreateZero(r)
-    return r
+    // if(!compareArray(array, r)) {
+    //     r = arrayByCreateZero(r)
+    //     return r
+    // } else {
+    //     return {
+    //         value: r,
+    //         i: false,
+    //         j: false,
+    //     }
+    // }
 }
 
 const handleUpArray = function(array) {
@@ -292,6 +341,7 @@ const arrayByCreateZero = function(array) {
             }
             if(num == n) {
                 a[i][j] = initNum
+                // console.log('lib new', i, j);
                 return {
                     value: a,
                     i: i,
