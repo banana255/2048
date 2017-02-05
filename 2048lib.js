@@ -1,33 +1,28 @@
-// var init_array = [
-//     [0,2,2,0],
-//     [0,2,2,0],
-//     [0,2,2,0],
-//     [0,2,2,0],
-// ]
-var score = {
-    now: 0,
-    max: 0,
+var TZFE = function(length) {
+    this.score = {
+        now: 0,
+        max: 0,
+    }
+    this.status = {
+        success: false,
+        false: false,
+    }
+    this.value = this.arrayInit(length)
+    this.length = length
 }
 
-var statusSuc = {
-    success: false,
-    false: false,
-}
-
-// console.log(status);
-
-const saveScore = function(s) {
+TZFE.prototype.saveScore = function(s) {
     /*
         记录 分数
     */
-    score.now += s
-    if (score.now > score.max) {
-        score.max = score.now
+    this.score.now += s
+    if (this.score.now > this.score.max) {
+        this.score.max = this.score.now
     }
-    // console.log(score.now, score.max);
+    // console.log(this.score.now, this.score.max);
 }
 
-const supplementZero = function(array, direction, num) {
+TZFE.prototype.supplementZero = function(array, direction, num) {
     /*
         给 array 补充 num 个 0
         direction 参数： begin 表示在头部补 0
@@ -47,7 +42,7 @@ const supplementZero = function(array, direction, num) {
     }
 }
 
-const rejectByIndex = function(array, index, direction='end') {
+TZFE.prototype.rejectByIndex = function(array, index, direction='end') {
     /*
         将 array[index] 剔除，并在头/尾补充 0,保持长度
         direction 参数： begin 表示在头部补 0
@@ -55,7 +50,7 @@ const rejectByIndex = function(array, index, direction='end') {
     */
     var a = array.slice(0)
     a.splice(index, 1)
-    a = supplementZero(a, direction, 1)
+    a = this.supplementZero(a, direction, 1)
     return a
     // if (index == 0) {
     //     a = a.slice(1)
@@ -73,7 +68,7 @@ const rejectByIndex = function(array, index, direction='end') {
     // }
 }
 
-const moveArray = function(array, direction) {
+TZFE.prototype.moveArray = function(array, direction) {
     /*
         移动数组: 根据 direction 让 array 清除 左/右 边的 0 ，
                 并在另一边用补 0 的方式保持 array 原来的长度
@@ -90,7 +85,7 @@ const moveArray = function(array, direction) {
                 // console.log(index);
                 a = a.slice(index)
                 var num = length - a.length
-                a = supplementZero(a, 'end', num)
+                a = this.supplementZero(a, 'end', num)
                 return a
             }
         }
@@ -101,7 +96,7 @@ const moveArray = function(array, direction) {
                 a = a.slice(0, index+1)
                 // console.log(a, index);
                 var num = length - a.length
-                a = supplementZero(a, 'begin', num)
+                a = this.supplementZero(a, 'begin', num)
                 return a
             }
         }
@@ -109,7 +104,7 @@ const moveArray = function(array, direction) {
     return a
 }
 
-const arrayByClearZero = function(array) {
+TZFE.prototype.arrayByClearZero = function(array) {
     var a = array.slice(0)
     for (var i = 0; i < a.length; i++) {
         if(a[i] == 0) {
@@ -117,18 +112,18 @@ const arrayByClearZero = function(array) {
             i--
         }
     }
-    a = supplementZero(a, 'end', array.length-a.length)
+    a = this.supplementZero(a, 'end', array.length-a.length)
     return a
 }
 
-const handleOneLine = function(array, direction) {
+TZFE.prototype.handleOneLine = function(array, direction) {
     /*
     处理一行
     direction 参数： left 表示在向左滑动处理
                     right 表示在向右滑动处理
     */
     var a = array.slice(0)
-    a = arrayByClearZero(a)
+    a = this.arrayByClearZero(a)
     var length = a.length
     for (var i = 0; i < length; i++) {
         // if (a[i] == a[i+1] && a[i] != 0) {
@@ -142,31 +137,31 @@ const handleOneLine = function(array, direction) {
         if (direction == 'left') {
             if (a[i] == a[i+1] && a[i] != 0) {
                 a[i] *= 2
-                saveScore(a[i])
-                a = rejectByIndex(a, i+1, 'end')
+                this.saveScore(a[i])
+                a = this.rejectByIndex(a, i+1, 'end')
             }
         } else if (direction == 'right') {
             if (a[length-1-i] == a[length-i-2] && a[length-1-i] != 0) {
                 a[length-1-i] *= 2
-                saveScore(a[length-1-i])
-                a = rejectByIndex(a, length-i-2, 'begin')
+                this.saveScore(a[length-1-i])
+                a = this.rejectByIndex(a, length-i-2, 'begin')
             }
         }
     }
     // console.log(a);
-    a = moveArray(a, direction)
+    a = this.moveArray(a, direction)
     return a
 }
 
-const encodeArray = function(array) {
+TZFE.prototype.encodeArray = function(array) {
     /*
         旋转 array
             使得 上下 变 左右
     */
     // console.log('encodeArray');
-    var a = copyArray(array)
+    var a = this.copyArray(array)
     var length = a.length
-    var r = arrayInit(length)
+    var r = this.arrayInit(length)
     for (var i = 0; i < length; i++) {
         for (var j = 0; j < a[i].length; j++) {
             r[i][j] = array[j][i]
@@ -175,16 +170,16 @@ const encodeArray = function(array) {
     return r
 }
 
-const decodeArray = function(array) {
+TZFE.prototype.decodeArray = function(array) {
     /*
         复原 array
             让 左右 回复成 上下
     */
     // console.log('decodeArray');
-    return encodeArray(array)
+    return this.encodeArray(array)
 }
 
-const compareArray = function(a1, a2) {
+TZFE.prototype.compareArray = function(a1, a2) {
     /*
         比较两个 二维数组 是否相等
     */
@@ -200,12 +195,12 @@ const compareArray = function(a1, a2) {
     return true
 }
 
-const newOneOfArray = function(result, array) {
+TZFE.prototype.newOneOfArray = function(result, array) {
     /*
         判断是否需要添加一个新元素，需要则添加，不需要则返回{i:false, j:false}
     */
-    if(!compareArray(array, result)) {
-        result = arrayByCreateZero(result)
+    if(!this.compareArray(array, result)) {
+        result = this.arrayByCreateZero(result)
         return result
     } else {
         return {
@@ -216,7 +211,7 @@ const newOneOfArray = function(result, array) {
     }
 }
 
-const isSameLine = function(array) {
+TZFE.prototype.isSameLine = function(array) {
     /*
         判断 一维数组 是否有相邻 两个 是相等的，如果有则返回 true
     */
@@ -228,7 +223,7 @@ const isSameLine = function(array) {
     return false
 }
 
-const isSuccess = function(array) {
+TZFE.prototype.isSuccess = function(array) {
     /*
         判断 成功 还是 失败, 从而改变全局变量 status
     */
@@ -236,7 +231,7 @@ const isSuccess = function(array) {
     for (var i = 0; i < array.length; i++) {
         for (var j = 0; j < array[i].length; j++) {
             if(array[i][j] == 2048) {
-                statusSuc.success = true
+                this.status.success = true
                 console.log('成功');
                 return 1
             }
@@ -254,85 +249,85 @@ const isSuccess = function(array) {
 
     // 判断每行相邻是否有相同的值
     for (var i = 0; i < array.length; i++) {
-        if (isSameLine(array[i])) {
+        if (this.isSameLine(array[i])) {
             return 1
         }
     }
 
     // 判断每列相邻是否有相同的值
-    var a = encodeArray(array)
+    var a = this.encodeArray(array)
     for (var i = 0; i < a.length; i++) {
-        if (isSameLine(a[i])) {
+        if (this.isSameLine(a[i])) {
             return 1
         }
     }
 
-    statusSuc.false = true
+    this.status.false = true
     console.log('失败');
 }
 
-const handleLeftArray = function(array) {
+TZFE.prototype.handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
-    var a = copyArray(array)
+    var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
-        r.push(handleOneLine(a[i], 'left'))
+        r.push(this.handleOneLine(a[i], 'left'))
     }
-    isSuccess(r)
-    return newOneOfArray(r, array)
+    this.isSuccess(r)
+    return this.newOneOfArray(r, array)
 }
 
-const handleRightArray = function(array) {
+TZFE.prototype.handleRightArray = function(array) {
     /*
         向右滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     // console.log('handleRightArray', array);
-    var a = copyArray(array)
+    var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
-        r.push(handleOneLine(a[i], 'right'))
+        r.push(this.handleOneLine(a[i], 'right'))
     }
-    isSuccess(r)
-    return newOneOfArray(r, array)
+    this.isSuccess(r)
+    return this.newOneOfArray(r, array)
     // console.log('handleRightArray end', r);
 }
 
-const handleUpArray = function(array) {
+TZFE.prototype.handleUpArray = function(array) {
     /*
         向上滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
-    var a = copyArray(array)
-    a = encodeArray(a)
-    a = handleLeftArray(a)
+    var a = this.copyArray(array)
+    a = this.encodeArray(a)
+    a = this.handleLeftArray(a)
     var r = {}
-    r.value = decodeArray(a.value)
+    r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
     return r
 }
 
-const handleDownArray = function(array) {
+TZFE.prototype.handleDownArray = function(array) {
     /*
         向下滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
     */
     // console.log('handleDownArray');
-    var a = copyArray(array)
-    a = encodeArray(a)
-    a = handleRightArray(a)
+    var a = this.copyArray(array)
+    a = this.encodeArray(a)
+    a = this.handleRightArray(a)
     var r = {}
-    r.value = decodeArray(a.value)
+    r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
     return r
 }
 
-const arrayLine = function(length) {
+TZFE.prototype.arrayLine = function(length) {
     // 制造一行 0
     var array = []
     for (var i = 0; i < length; i++) {
@@ -341,18 +336,18 @@ const arrayLine = function(length) {
     return array
 }
 
-const arrayInit = function(length) {
+TZFE.prototype.arrayInit = function(length) {
     /*
         制造一个 length * length 的矩阵数组, 矩阵数值为 0
     */
-    const array = []
+    var array = []
     for (var i = 0; i < length; i++) {
-        array.push(arrayLine(length))
+        array.push(this.arrayLine(length))
     }
     return array
 }
 
-const numOfZeroFromArray = function(array) {
+TZFE.prototype.numOfZeroFromArray = function(array) {
     /*
         返回: 二维数组中 0 的个数
     */
@@ -367,15 +362,15 @@ const numOfZeroFromArray = function(array) {
     return num
 }
 
-const numberRandom = function(count) {
+TZFE.prototype.numberRandom = function(count) {
     /*
         在 0 ~ count 内,产生一个 随机数
     */
-    const r = Math.random() * count
+    var r = Math.random() * count
     return Math.ceil(r)
 }
 
-const copyArray = function(array) {
+TZFE.prototype.copyArray = function(array) {
     /*
         复制二维数组
     */
@@ -387,15 +382,15 @@ const copyArray = function(array) {
     return r
 }
 
-const arrayByCreateZero = function(array) {
+TZFE.prototype.arrayByCreateZero = function(array) {
     /*
         随机挑选 二维数组 中的其中一个 0 位置赋值为 2，并返回这个 二维数组 & 坐标
     */
-    var a = copyArray(array)
-    const count = numOfZeroFromArray(a)
-    const num = numberRandom(count)
+    var a = this.copyArray(array)
+    var count = this.numOfZeroFromArray(a)
+    var num = this.numberRandom(count)
     var n = 0
-    const initNum = 2
+    var initNum = 2
     for (var i = 0; i < a.length; i++) {
         for (var j = 0; j < a[i].length; j++) {
             if(a[i][j] == 0) {
@@ -414,12 +409,12 @@ const arrayByCreateZero = function(array) {
     }
 }
 
-const init2048Array = function() {
+TZFE.prototype.init2048Array = function(length) {
     /*
         初始化 2048，即生成一个二维数组，随机数组中有两个 2 ,返回 二维数组 & 坐标
     */
-    var initaArray = arrayInit(4)
-    var r = arrayByCreateZero(initaArray)
+    var initaArray = this.arrayInit(length)
+    var r = this.arrayByCreateZero(initaArray)
     initArray = r.value
     var result = {
         f: {
@@ -427,7 +422,7 @@ const init2048Array = function() {
             j: r.j,
         }
     }
-    r = arrayByCreateZero(initArray)
+    r = this.arrayByCreateZero(initArray)
     result.initArray = r.value
     result.s = {
         i: r.i,

@@ -9,7 +9,7 @@ const arrayFormatByTds = function(table) {
     var tds = es(table+' td > span')
     var trs = es(table+' tr')
     // console.log(tds, trs);
-    var t = arrayInit(trs.length)
+    var t = t2048.arrayInit(trs.length)
     for (var i = 0; i < trs.length; i++) {
         for (var j = 0; j < trs[i].children.length; j++) {
             t[i][j] = tds[i * trs.length + j]
@@ -68,20 +68,22 @@ const showisSuccess = function(status) {
 const showScore = function(score) {
     e('#id-score-now').innerHTML = score.now
     var nowMax = e('#id-score-max').innerHTML
-    if (score.now > nowMax) {
-        e('#id-score-max').innerHTML = score.max
-    }
+    // if (score.now > nowMax) {
+    //     e('#id-score-max').innerHTML = score.max
+    // }
+    e('#id-score-max').innerHTML = score.max
+
 }
 
-const showView = function(array) {
+const showView = function(TZFE) {
     /*
-        把 array 二维数组 和 分数 渲染成页面
+        把 array 二维数组 和 分数 和 成功/失败 渲染成页面
     */
-    var a = copyArray(array)
+    var a = TZFE.copyArray(TZFE.value)
     var table = arrayFormatByTds('table')
     changeViewByArray(table, a)
-    showScore(score)
-    showisSuccess(statusSuc)
+    showScore(TZFE.score)
+    showisSuccess(TZFE.status)
 }
 
 const showNew = function(i, j) {
@@ -98,9 +100,9 @@ const leftActionToView = function() {
     /*
         向左滑动时视图的变化,并返回新元素的坐标
     */
-    var r = handleLeftArray(value2048)
-    value2048 = r.value
-    showView(value2048)
+    var r = t2048.handleLeftArray(t2048.value)
+    t2048.value = r.value
+    showView(t2048)
     // console.log(value2048);
     return r
 }
@@ -109,9 +111,9 @@ const rightActionToView = function() {
     /*
         向右滑动时视图的变化,并返回新元素的坐标
     */
-    var r = handleRightArray(value2048)
-    value2048 = r.value
-    showView(value2048)
+    var r = t2048.handleRightArray(t2048.value)
+    t2048.value = r.value
+    showView(t2048)
     // console.log(value2048);
     return r
 }
@@ -120,9 +122,9 @@ const upActionToView = function() {
     /*
         向上滑动时视图的变化,并返回新元素的坐标
     */
-    var r = handleUpArray(value2048)
-    value2048 = r.value
-    showView(value2048)
+    var r = t2048.handleUpArray(t2048.value)
+    t2048.value = r.value
+    showView(t2048)
     // console.log(value2048);
     return r
 }
@@ -131,21 +133,62 @@ const downActionToView = function() {
     /*
         向下滑动时视图的变化,并返回新元素的坐标
     */
-    var r = handleDownArray(value2048)
+    var r = t2048.handleDownArray(t2048.value)
     // console.log(r);
-    value2048 = r.value
-    showView(value2048)
+    t2048.value = r.value
+    showView(t2048)
     // console.log(value2048);
     return r
 }
 
-const init2048 = function() {
-    var n = init2048Array()
-    value2048 = n.initArray
-    // console.log('initArray', a);
-    showView(value2048)
-    showNew(n.f.i, n.f.j)
-    showNew(n.s.i, n.s.j)
+const resetData = function(length) {
+    var max = t2048.score.max
+    t2048 = new TZFE(length)
+    t2048.score.max = max
+    t2048.value = false
+    save2048(t2048)
+}
+
+const save2048 = function(TZFE) {
+    var t = {
+        score: TZFE.score,
+        status: TZFE.status,
+        value: TZFE.value,
+        length: TZFE.length,
+    }
+    var data = JSON.stringify(t)
+    localStorage.t2048 = data
+}
+
+const load2048 = function(TZFE) {
+    var t = localStorage.t2048
+    if (t) {
+        data = JSON.parse(t)
+        TZFE.score = data.score
+        TZFE.status = data.status
+        TZFE.value = data.value
+        TZFE.length = data.length
+        return true
+    } else {
+        console.log('无储存数据');
+        return false
+    }
+}
+
+const init2048 = function(TZFE) {
+    // console.log(TZFE);
+    var flat = false
+    if (!load2048(TZFE) || !TZFE.value) {
+        flat = true
+        var n = TZFE.init2048Array(TZFE.length)
+        TZFE.value = n.initArray
+    }
+    // console.log(TZFE);
+    showView(TZFE)
+    if (flat) {
+        showNew(n.f.i, n.f.j)
+        showNew(n.s.i, n.s.j)
+    }
 }
 
 const angleBySlide = function(dx, dy) {
@@ -213,24 +256,26 @@ const bindSlideEvent = function() {
         }
         if (r.i !== false) {
             // 给 新增加的元素 添加 放大 的动画
+            save2048(t2048)
             showNew(r.i, r.j)
         }
     })
 }
 
-const newGame = function() {
-    value2048 = arrayInit(4)
-    score.now = 0
-    statusSuc.success = false
-    statusSuc.false = false
+const newGame = function(length) {
+    // value2048 = arrayInit(4)
+    // score.now = 0
+    // statusSuc.success = false
+    // statusSuc.false = false
+    resetData(length)
     e('.false-eff').classList.add('none')
     e('.success-eff').classList.add('none')
-    init2048()
+    init2048(t2048)
 }
 
 const bindNewGame = function() {
     e('.new-game').addEventListener('touchend', function(event){
-        newGame()
+        newGame(t2048.length)
     })
 }
 
@@ -240,10 +285,10 @@ const bindEvents = function() {
     bindNewGame()
 }
 
-var value2048 = arrayInit(4)
+var t2048 = new TZFE(4)
 
 const __main2048 = function() {
-    init2048()
+    init2048(t2048)
 
     bindEvents()
 }
