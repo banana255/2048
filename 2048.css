@@ -3,6 +3,10 @@
     background: #fbf8ee;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* header */
 .t2048-header {
     height: 15%;
@@ -46,8 +50,8 @@ score {
 score > span {
     background: #b7a99e;
     box-sizing: border-box;
-    width: 11vh;
-    height: 7vh;
+    width: 5rem;
+    height: 3rem;
     border-radius: 0.3rem;
     text-align: center;
     font-size: 0.9rem;
@@ -84,8 +88,9 @@ feature {
 
 feature > span {
     background: #f5965f;
-    width: 11vh;
-    height: 3vh;
+    width: 5rem;
+    height: 2rem;
+    line-height: 2rem;
     border-radius: 0.3rem;
     text-align: center;
     font-size: 0.9rem;
@@ -97,7 +102,7 @@ feature > span {
 
 .new-game {
     display: inline-block;
-    margin-left: calc(7vw + 11vh);
+    margin-left: calc(7vw + 5rem);
 }
 
 /* footer */
@@ -133,7 +138,7 @@ td > span {
     width: 100%;
     height: 100%;
     /* 算出行高的实际值 */
-    line-height: 22vw;
+    line-height: 20vw;
 }
 
 /* 垂直居中 */
@@ -205,8 +210,8 @@ td > span {
 
 /* 新添加的元素添加放大效果 */
 .new-one {
-    animation: shine 1s;
-    -webkit-animation: shine 1s;
+    animation: shine 0.5s;
+    -webkit-animation: shine 0.5s;
 }
 
 @keyframes shine {
