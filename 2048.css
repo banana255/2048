@@ -9,13 +9,13 @@
 
 /* header */
 .t2048-header {
-    height: 15%;
+    height: 25%;
 }
 
 logo {
     display: inline-block;
-    height: 80%;
-    width: 12vh;
+    height: 6rem;
+    width: 6rem;
     background: #ecc835;
     margin-left: 1.5rem;
     border-radius: 0.5rem;
@@ -83,7 +83,7 @@ score > span {
 
 feature {
     display: block;
-    margin-top: 1vh;
+    margin-top: 0.5rem;
 }
 
 feature > span {
@@ -107,7 +107,7 @@ feature > span {
 
 /* footer */
 .t2048-footer {
-    height: 25%;
+    height: 15%;
 }
 
 /* 2048 main */
