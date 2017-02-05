@@ -187,7 +187,7 @@ const bindSlideEvent = function() {
         startY = event.touches[0].pageY
     })
 
-    e('table').addEventListener('touchmove', function(event){
+    e('.t2048-main').addEventListener('touchmove', function(event){
         // console.log('touchmove', event);
         // var endX = event.changedTouches[0].pageX;
         // var endY = event.changedTouches[0].pageY;
