@@ -211,6 +211,18 @@ td > span {
     font-size: 2rem;
 }
 
+.t4096 {
+    background: #2b2a23;
+    color: #f8f5f0;
+    font-size: 2rem;
+}
+
+.t8192 {
+    background: #21201b;
+    color: #f8f5f0;
+    font-size: 2rem;
+}
+
 /* 新添加的元素添加放大效果 */
 .new-one {
     transform: scale(0);
