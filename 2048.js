@@ -89,7 +89,7 @@ const showMerge = function(array) {
         var y = array[i][1]
         table[x][y].classList.add('merge-one')
         setTimeout.call(this, function(){
-            // table[x][y].classList.remove('merge-one')
+            table[x][y].classList.remove('merge-one')
         }, 500)
     }
 }
@@ -312,7 +312,7 @@ const bindSlideEvent = function() {
             // 给 新增加的元素 添加 放大 的动画
             save2048(t2048)
             showNew(r.i, r.j)
-            console.log(t2048.merge);
+            // console.log(t2048.merge);
         }
     })
 }
