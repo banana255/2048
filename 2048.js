@@ -55,6 +55,8 @@ const showisSuccess = function(status) {
         setTimeout.call(this, function(){
             e('.false-eff').classList.remove('warning')
         }, 400)
+    } else {
+        e('.false-eff').classList.add('none')
     }
     if(status.success) {
         e('.success-eff').classList.remove('none')
@@ -62,6 +64,8 @@ const showisSuccess = function(status) {
         setTimeout.call(this, function(){
             e('.success-eff').classList.remove('warning')
         }, 400)
+    } else {
+        e('.success-eff').classList.add('none')
     }
 }
 
