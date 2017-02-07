@@ -9,6 +9,8 @@ var TZFE = function(length) {
     }
     this.value = this.arrayInit(length)
     this.length = length
+    this.backupData = []
+    this.merge = []
 }
 
 TZFE.prototype.saveScore = function(s) {
@@ -20,6 +22,28 @@ TZFE.prototype.saveScore = function(s) {
         this.score.max = this.score.now
     }
     // console.log(this.score.now, this.score.max);
+}
+
+TZFE.prototype.backup = function() {
+    var data = {
+        // score: new Object(this.score),
+        score: {
+            now: this.score.now,
+            max: this.score.max,
+        },
+        // status: new Object(this.status),
+        status: {
+            success: this.status.success,
+            false: this.status.false,
+        },
+        value: this.value,
+        length: this.length,
+    }
+    // console.log('backup', data, data.score);
+    // console.log(data.score === this.score);
+    // console.log(data.status === this.status);
+    // console.log(data.value === this.value);
+    this.backupData.push(data)
 }
 
 TZFE.prototype.supplementZero = function(array, direction, num) {
@@ -121,10 +145,13 @@ TZFE.prototype.handleOneLine = function(array, direction) {
     处理一行
     direction 参数： left 表示在向左滑动处理
                     right 表示在向右滑动处理
+    返回处理好的数据 a & 合并位置的坐标 is
     */
     var a = array.slice(0)
     a = this.arrayByClearZero(a)
+    var is = []
     var length = a.length
+    a = this.moveArray(a, direction)
     for (var i = 0; i < length; i++) {
         // if (a[i] == a[i+1] && a[i] != 0) {
         //     a[i] *= 2
@@ -137,20 +164,25 @@ TZFE.prototype.handleOneLine = function(array, direction) {
         if (direction == 'left') {
             if (a[i] == a[i+1] && a[i] != 0) {
                 a[i] *= 2
+                is.push(i)
                 this.saveScore(a[i])
                 a = this.rejectByIndex(a, i+1, 'end')
             }
         } else if (direction == 'right') {
             if (a[length-1-i] == a[length-i-2] && a[length-1-i] != 0) {
                 a[length-1-i] *= 2
+                is.push(length-1-i)
                 this.saveScore(a[length-1-i])
                 a = this.rejectByIndex(a, length-i-2, 'begin')
             }
         }
     }
     // console.log(a);
-    a = this.moveArray(a, direction)
-    return a
+    // a = this.moveArray(a, direction)
+    return {
+        a: a,
+        is: is,
+    }
 }
 
 TZFE.prototype.encodeArray = function(array) {
@@ -197,7 +229,7 @@ TZFE.prototype.compareArray = function(a1, a2) {
 
 TZFE.prototype.newOneOfArray = function(result, array) {
     /*
-        判断是否需要添加一个新元素，需要则添加，不需要则返回{i:false, j:false}
+        判断是否需要添加一个新元素，需要则添加 并 备份数据，不需要则返回{i:false, j:false}
     */
     if(!this.compareArray(array, result)) {
         result = this.arrayByCreateZero(result)
@@ -266,15 +298,31 @@ TZFE.prototype.isSuccess = function(array) {
     console.log('失败');
 }
 
+TZFE.prototype.saveMerge = function(i, js) {
+    /*
+        将 js 拆成 j1 j2 ...,并和 i 组合成 [i, j] 保存到 this.merge
+    */
+    for (var x = 0; x < js.length; x++) {
+        var r = []
+        r.push(i)
+        r.push(js[x])
+        this.merge.push(r)
+    }
+}
+
 TZFE.prototype.handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
+        并将 合并的坐标 保存到 this.merge
     */
+    this.merge = []
     var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
-        r.push(this.handleOneLine(a[i], 'left'))
+        var restlt = this.handleOneLine(a[i], 'left')
+        r.push(restlt.a)
+        this.saveMerge(i, restlt.is)
     }
     this.isSuccess(r)
     return this.newOneOfArray(r, array)
@@ -284,16 +332,32 @@ TZFE.prototype.handleRightArray = function(array) {
     /*
         向右滑动时 array 合并 & 移动 & 添加一个新元素 (2)
         返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
+        并将 合并的坐标 保存到 this.merge
+
     */
     // console.log('handleRightArray', array);
+    this.merge = []
     var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
-        r.push(this.handleOneLine(a[i], 'right'))
+        var restlt = this.handleOneLine(a[i], 'right')
+        r.push(restlt.a)
+        this.saveMerge(i, restlt.is)
+        // r.push(this.handleOneLine(a[i], 'right'))
     }
     this.isSuccess(r)
     return this.newOneOfArray(r, array)
     // console.log('handleRightArray end', r);
+}
+
+TZFE.prototype.encodeMerge = function() {
+    var a = this.merge
+    for (var i = 0; i < a.length; i++) {
+        var x = a[i][0]
+        var y = a[i][1]
+        a[i][0] = y
+        a[i][1] = x
+    }
 }
 
 TZFE.prototype.handleUpArray = function(array) {
@@ -308,6 +372,7 @@ TZFE.prototype.handleUpArray = function(array) {
     r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
+    this.encodeMerge()
     return r
 }
 
@@ -324,6 +389,7 @@ TZFE.prototype.handleDownArray = function(array) {
     r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
+    this.encodeMerge()
     return r
 }
 
@@ -382,6 +448,15 @@ TZFE.prototype.copyArray = function(array) {
     return r
 }
 
+TZFE.prototype.randomInitValue = function() {
+    var a = Math.random() * 10
+    if (a < 8) {
+        return 2
+    } else {
+        return 4
+    }
+}
+
 TZFE.prototype.arrayByCreateZero = function(array) {
     /*
         随机挑选 二维数组 中的其中一个 0 位置赋值为 2，并返回这个 二维数组 & 坐标
@@ -390,7 +465,7 @@ TZFE.prototype.arrayByCreateZero = function(array) {
     var count = this.numOfZeroFromArray(a)
     var num = this.numberRandom(count)
     var n = 0
-    var initNum = 2
+    var initNum = this.randomInitValue()
     for (var i = 0; i < a.length; i++) {
         for (var j = 0; j < a[i].length; j++) {
             if(a[i][j] == 0) {

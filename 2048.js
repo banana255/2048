@@ -75,15 +75,32 @@ const showScore = function(score) {
 
 }
 
+const showMerge = function(array) {
+    /*
+        给合并元素添加 merge-one css 动画
+    */
+    var table = arrayFormatByTds('table')
+    for (var i = 0; i < array.length; i++) {
+        var x = array[i][0]
+        var y = array[i][1]
+        table[x][y].classList.add('merge-one')
+        setTimeout.call(this, function(){
+            // table[x][y].classList.remove('merge-one')
+        }, 500)
+    }
+}
+
 const showView = function(TZFE) {
     /*
-        把 array 二维数组 和 分数 和 成功/失败 渲染成页面
+        把 array 二维数组 和 分数 和 成功/失败 渲染成页面,并备份
     */
     var a = TZFE.copyArray(TZFE.value)
     var table = arrayFormatByTds('table')
     changeViewByArray(table, a)
+    // console.log('show view', TZFE);
     showScore(TZFE.score)
     showisSuccess(TZFE.status)
+    showMerge(TZFE.merge)
 }
 
 const showNew = function(i, j) {
@@ -141,6 +158,34 @@ const downActionToView = function() {
     return r
 }
 
+const undo = function(TZFE) {
+    var length = TZFE.backupData.length
+    // console.log(length);
+    if (length <= 1) {
+        // console.log('<=1');
+        var b = undefined
+    } else {
+        TZFE.backupData.pop()
+        var b = TZFE.backupData[length-2]
+    }
+    // console.log('backupData is', b, TZFE.score.now);
+    if (b != undefined) {
+        TZFE.score = {
+            now: b.score.now,
+            max: b.score.max,
+        }
+        TZFE.status =  {
+            success: b.status.success,
+            false: b.status.false,
+        }
+        TZFE.value = b.value
+        TZFE.length = b.length
+        // console.log('TZFE score now', TZFE.score.now);
+        save2048(TZFE)
+        showView(TZFE)
+    }
+}
+
 const resetData = function(length) {
     var max = t2048.score.max
     t2048 = new TZFE(length)
@@ -155,6 +200,7 @@ const save2048 = function(TZFE) {
         status: TZFE.status,
         value: TZFE.value,
         length: TZFE.length,
+        backupData: TZFE.backupData,
     }
     var data = JSON.stringify(t)
     localStorage.t2048 = data
@@ -168,6 +214,7 @@ const load2048 = function(TZFE) {
         TZFE.status = data.status
         TZFE.value = data.value
         TZFE.length = data.length
+        TZFE.backupData = (data.backupData == undefined) ? [] : data.backupData
         return true
     } else {
         console.log('无储存数据');
@@ -186,6 +233,7 @@ const init2048 = function(TZFE) {
     // console.log(TZFE);
     showView(TZFE)
     if (flat) {
+        TZFE.backup()
         showNew(n.f.i, n.f.j)
         showNew(n.s.i, n.s.j)
     }
@@ -208,7 +256,7 @@ const judgeDirection = function(sX, sY, eX, eY) {
     var dy = sY - eY
     var angle = angleBySlide(dx, dy);
     // 滑动距离太短 的情况
-    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+    if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
         return false
     } else if (angle >= -45 && angle < 45) {
         return 'right'
@@ -243,6 +291,7 @@ const bindSlideEvent = function() {
         var endY = event.changedTouches[0].pageY;
 
         var dire = judgeDirection(startX, startY, endX, endY)
+
         if (dire == 'up') {
             var r = upActionToView()
         } else if (dire == 'down') {
@@ -255,9 +304,11 @@ const bindSlideEvent = function() {
             return false
         }
         if (r.i !== false) {
+            t2048.backup()
             // 给 新增加的元素 添加 放大 的动画
             save2048(t2048)
             showNew(r.i, r.j)
+            console.log(t2048.merge);
         }
     })
 }
@@ -279,10 +330,18 @@ const bindNewGame = function() {
     })
 }
 
+const bindUndo = function() {
+    e('.feature-undo').addEventListener('touchend', function(event){
+        undo(t2048)
+    })
+}
+
 const bindEvents = function() {
     bindSlideEvent()
 
     bindNewGame()
+
+    bindUndo()
 }
 
 var t2048 = new TZFE(4)

@@ -96,13 +96,13 @@ feature > span {
     font-size: 0.9rem;
 }
 
-.mean {
+.feature-undo {
     display: inline-block;
 }
 
 .new-game {
     display: inline-block;
-    margin-left: calc(7vw + 5rem);
+    margin-left: 7vw;
 }
 
 /* footer */
@@ -210,8 +210,9 @@ td > span {
 
 /* 新添加的元素添加放大效果 */
 .new-one {
-    animation: shine 0.5s;
-    -webkit-animation: shine 0.5s;
+    transform: scale(0);
+    animation: shine 0.5s 0.25s;
+    -webkit-animation: shine 0.5s 0.25s;
 }
 
 @keyframes shine {
@@ -225,16 +226,22 @@ td > span {
     }
 }
 
-/*@-webkit-keyframes shine {
+/* 合并的元素添加缩小效果 */
+.merge-one {
+    animation: suo 0.5s;
+    -webkit-animation: suo 0.5s;
+}
+
+@keyframes suo {
     from {
-        transform: scale(1.2);
-        -webkit-transform: scale(1.2);
+        transform: scale(2);
+        -webkit-transform: scale(2);
     }
     to {
         transform: scale(1);
         -webkit-transform: scale(1);
     }
-}*/
+}
 
 .none {
     font-size: 0 !important;
