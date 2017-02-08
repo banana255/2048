@@ -11,6 +11,7 @@ var TZFE = function(length) {
     this.length = length
     this.backupData = []
     this.merge = []
+    this.new = []
 }
 
 TZFE.prototype.saveScore = function(s) {
@@ -38,6 +39,8 @@ TZFE.prototype.backup = function() {
         },
         value: this.value,
         length: this.length,
+        merge: this.merge,
+        new: this.new,
     }
     // console.log('backup', data, data.score);
     // console.log(data.score === this.score);
@@ -313,10 +316,11 @@ TZFE.prototype.saveMerge = function(i, js) {
 TZFE.prototype.handleLeftArray = function(array) {
     /*
         向左滑动时 array 合并 & 移动 & 添加一个新元素 (2)
-        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
+        返回 r [value, i, j] (其中 i j 是增加的新元素的坐标)
         并将 合并的坐标 保存到 this.merge
     */
     this.merge = []
+    this.new = []
     var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
@@ -325,18 +329,22 @@ TZFE.prototype.handleLeftArray = function(array) {
         this.saveMerge(i, restlt.is)
     }
     this.isSuccess(r)
-    return this.newOneOfArray(r, array)
+    var restlt = this.newOneOfArray(r, array)
+    var zuobiao = [restlt.i, restlt.j]
+    this.new.push(zuobiao)
+    return restlt
 }
 
 TZFE.prototype.handleRightArray = function(array) {
     /*
         向右滑动时 array 合并 & 移动 & 添加一个新元素 (2)
-        返回 r {value, i, j} (其中 i j 是增加的新元素的坐标)
+        返回 r [value, i, j] (其中 i j 是增加的新元素的坐标)
         并将 合并的坐标 保存到 this.merge
-
+        将 新加的坐标 保存到 this.new
     */
     // console.log('handleRightArray', array);
     this.merge = []
+    this.new = []
     var a = this.copyArray(array)
     var r = []
     for (var i = 0; i < a.length; i++) {
@@ -346,12 +354,24 @@ TZFE.prototype.handleRightArray = function(array) {
         // r.push(this.handleOneLine(a[i], 'right'))
     }
     this.isSuccess(r)
-    return this.newOneOfArray(r, array)
-    // console.log('handleRightArray end', r);
+    var restlt = this.newOneOfArray(r, array)
+    var zuobiao = [restlt.i, restlt.j]
+    this.new.push(zuobiao)
+    return restlt
 }
 
-TZFE.prototype.encodeMerge = function() {
-    var a = this.merge
+// TZFE.prototype.encodeMerge = function() {
+//     var a = this.merge
+//     for (var i = 0; i < a.length; i++) {
+//         var x = a[i][0]
+//         var y = a[i][1]
+//         a[i][0] = y
+//         a[i][1] = x
+//     }
+// }
+
+TZFE.prototype.encodeZuobiao = function(zuobiaoArrray) {
+    var a = zuobiaoArrray
     for (var i = 0; i < a.length; i++) {
         var x = a[i][0]
         var y = a[i][1]
@@ -372,7 +392,8 @@ TZFE.prototype.handleUpArray = function(array) {
     r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
-    this.encodeMerge()
+    this.encodeZuobiao(this.merge)
+    this.encodeZuobiao(this.new)
     return r
 }
 
@@ -389,7 +410,8 @@ TZFE.prototype.handleDownArray = function(array) {
     r.value = this.decodeArray(a.value)
     r.i = a.j
     r.j = a.i
-    this.encodeMerge()
+    this.encodeZuobiao(this.merge)
+    this.encodeZuobiao(this.new)
     return r
 }
 

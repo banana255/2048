@@ -105,16 +105,35 @@ const showView = function(TZFE) {
     showScore(TZFE.score)
     showisSuccess(TZFE.status)
     showMerge(TZFE.merge)
+    showNew(TZFE.new)
 }
 
-const showNew = function(i, j) {
-    // console.log('new one', i, j);
+// const showNew = function(i, j) {
+//     // console.log('new one', i, j);
+//     var t = arrayFormatByTds('table')
+//     // t[i][j].classList.remove('new-one')
+//     t[i][j].classList.add('new-one')
+//     setTimeout.call(this, function(){
+//         t[i][j].classList.remove('new-one')
+//     }, 500)
+// }
+
+const showNew = function(array) {
+    /*
+        array 格式 [[x1, y1], [x2, y2]...]
+    */
+    // console.log('showNew', array);
     var t = arrayFormatByTds('table')
-    // t[i][j].classList.remove('new-one')
-    t[i][j].classList.add('new-one')
-    setTimeout.call(this, function(){
-        t[i][j].classList.remove('new-one')
-    }, 500)
+    for (var i = 0; i < array.length; i++) {
+        var x = array[i][0]
+        var y = array[i][1]
+        if (x !== false) {
+            t[x][y].classList.add('new-one')
+            setTimeout.call(this, function(){
+                t[x][y].classList.remove('new-one')
+            }, 500)
+        }
+    }
 }
 
 const leftActionToView = function() {
@@ -184,6 +203,8 @@ const undo = function(TZFE) {
         }
         TZFE.value = b.value
         TZFE.length = b.length
+        TZFE.merge = (b.merge == undefined) ? [] : b.merge
+        TZFE.new = (b.new == undefined) ? [] : b.new
         // console.log('TZFE score now', TZFE.score.now);
         save2048(TZFE)
         showView(TZFE)
@@ -205,6 +226,8 @@ const save2048 = function(TZFE) {
         value: TZFE.value,
         length: TZFE.length,
         backupData: TZFE.backupData,
+        merge: TZFE.merge,
+        new: TZFE.new
     }
     var data = JSON.stringify(t)
     localStorage.t2048 = data
@@ -238,8 +261,8 @@ const init2048 = function(TZFE) {
     showView(TZFE)
     if (flat) {
         TZFE.backup()
-        showNew(n.f.i, n.f.j)
-        showNew(n.s.i, n.s.j)
+        // showNew(n.f.i, n.f.j)
+        // showNew(n.s.i, n.s.j)
     }
 }
 
@@ -311,7 +334,7 @@ const bindSlideEvent = function() {
             t2048.backup()
             // 给 新增加的元素 添加 放大 的动画
             save2048(t2048)
-            showNew(r.i, r.j)
+            // showNew(r.i, r.j)
             // console.log(t2048.merge);
         }
     })
