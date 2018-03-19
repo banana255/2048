@@ -3,7 +3,7 @@
 > 本页面目前仅适合在移动端使用
 >   兼容性主要考虑 chrome 内核 和 safari 内核 的浏览器
 
-demo： http://www.bigbananas.cn/2048/
+demo： http://www.bananaSS.cc/2048/
 
 ![效果图](2048.gif)
 
